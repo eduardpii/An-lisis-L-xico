@@ -52,24 +52,29 @@ def evaluar(arbol):
         return evaluar(arbol.izq) * evaluar(arbol.der)
     return int(arbol.valor)
 
+#Esta función evalua los tokens
 def evaluar_patrones(expresion):
     error = 0
     #patron = re.compile('([0-9]+)([+|-|*|/|=]+)([a-z]+)')
     patronNum = re.compile('^[-+]?[0-9]+$')
     patronVar = re.compile('^[a-z][a-zA-Z_$0-9]*$')
-    patronOpe = re.compile('[+|-|*|/|=]')
+    patronOpe = re.compile('[-|+|*|/|=]')
     for i in expresion:
         if(patronNum.match(i)):
             #print("Num "+ i)
-            tokens["Valor"]= [i]
+            valor.append(i)
+            tokens["Valor"]= valor
         elif(patronVar.match(i)):
             #print("Var "+ i)
-            tokens["Variable"]= [i]
+            variable.append(i)
+            tokens["Variable"]= variable
         elif(patronOpe.match(i)):
             #print("Ope "+ i)
-            tokens["Operador"]= [i]
+            operador.append(i)
+            tokens["Operador"]= operador
         else:
-            tokens["Erroneos"]= [i]
+            erroneos.append(i)
+            tokens["Erroneos"]= erroneos
             error += 1
     return error
 
@@ -79,6 +84,10 @@ if __name__ == "__main__":
     variable = ""
     n = "s"
     pila = Pila()
+    valor = []
+    variable = []
+    operador = []
+    erroneos = []
     while (n == "s"):
         expresion = input("Ingrese una expresión en POSFIJA: ").split(" ")
         error = evaluar_patrones(expresion)
@@ -86,8 +95,9 @@ if __name__ == "__main__":
             for token in tokens:
                 print (token, ":", tokens[token])
             convertir(expresion, pila)
+            n = input("Desea ingresar otras expresion? s/n ")
         else:
             for token in tokens:
                 print (token, ":", tokens[token])
             print("El numero de errores es: "+ str(error))
-        n = input("Desea ingresar otras expresion? s/n ")
+            n = "n"
